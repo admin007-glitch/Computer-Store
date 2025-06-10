@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const formatPrice = (price) =>
   price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₸';
 
 export default function CartPage({ cartItems, onRemove }) {
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const [items, setItems] = useState(cartItems || []);
   const navigate = useNavigate();
+
+  // Пример загрузки корзины с backend (localhost)
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/cart')
+      .then(res => setItems(res.data))
+      .catch(err => console.error('Ошибка загрузки корзины:', err));
+  }, []);
+
+  // Подсчёт общей суммы
+  const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
+
+  // Удаление с backend и обновление локального состояния
+  const handleRemove = (item) => {
+    axios.delete(`http://localhost:5000/api/cart/${item._id}`)
+      .then(() => {
+        const updated = items.filter(i => i._id !== item._id);
+        setItems(updated);
+        if (onRemove) onRemove(item);
+      })
+      .catch(err => console.error('Ошибка удаления из корзины:', err));
+  };
 
   return (
     <div
@@ -24,13 +46,13 @@ export default function CartPage({ cartItems, onRemove }) {
         Корзина
       </h1>
 
-      {cartItems.length === 0 && (
+      {items.length === 0 && (
         <p style={{ fontSize: 18, color: '#666', textAlign: 'center' }}>
           Корзина пуста
         </p>
       )}
 
-      {cartItems.map((item) => (
+      {items.map((item) => (
         <div
           key={item._id}
           style={{
@@ -52,7 +74,7 @@ export default function CartPage({ cartItems, onRemove }) {
           </div>
           <div>
             <button
-              onClick={() => onRemove(item)}
+              onClick={() => handleRemove(item)}
               style={{
                 backgroundColor: '#e53935',
                 color: '#fff',
@@ -72,7 +94,7 @@ export default function CartPage({ cartItems, onRemove }) {
         </div>
       ))}
 
-      {cartItems.length > 0 && (
+      {items.length > 0 && (
         <>
           <h2
             style={{

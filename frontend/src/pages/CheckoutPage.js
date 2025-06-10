@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 const formatPrice = (price) =>
   price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₸';
@@ -19,24 +20,21 @@ export default function CheckoutPage({ cartItems, user, setCartItems }) {
       _id: item._id.toString(),
     }));
 
-    const res = await fetch('/api/orders', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    try {
+      const res = await axios.post('http://localhost:5000/api/orders', {
         email: user.email,
         orderItems: formattedOrderItems,
         totalPrice,
-      }),
-    });
+      });
 
-    if (res.ok) {
-      setCartItems([]);
-      alert('Заказ успешно создан!');
-    } else {
-      const error = await res.json();
-      alert('Ошибка при оформлении заказа: ' + (error.message || 'неизвестная ошибка'));
+      if (res.status === 201 || res.status === 200) {
+        setCartItems([]);
+        alert('Заказ успешно создан!');
+      } else {
+        alert('Ошибка при оформлении заказа: сервер вернул статус ' + res.status);
+      }
+    } catch (error) {
+      alert('Ошибка при оформлении заказа: ' + (error.response?.data?.message || error.message || 'неизвестная ошибка'));
     }
   };
 

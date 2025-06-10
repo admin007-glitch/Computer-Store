@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const BASE_URL = 'https://computer-store-wsd2.onrender.com'; // <-- поменяй на нужный URL
+
 export default function UserAuth({ setUser }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,8 +11,8 @@ export default function UserAuth({ setUser }) {
   const handleSubmit = async e => {
     e.preventDefault();
     const url = isRegister
-      ? 'http://localhost:5000/api/users/register'
-      : 'http://localhost:5000/api/users/login'; // ✅ Исправлено
+      ? `${BASE_URL}/api/users/register`
+      : `${BASE_URL}/api/users/login`;
 
     try {
       const res = await fetch(url, {
@@ -59,7 +61,7 @@ export default function UserAuth({ setUser }) {
       <p style={{ color: 'red' }}>{message}</p>
       <p style={{ marginTop: 10 }}>
         {isRegister ? 'Уже есть аккаунт?' : 'Нет аккаунта?'}{' '}
-        <button onClick={() => setIsRegister(!isRegister)}>
+        <button type="button" onClick={() => setIsRegister(!isRegister)}>
           {isRegister ? 'Войти' : 'Зарегистрироваться'}
         </button>
       </p>

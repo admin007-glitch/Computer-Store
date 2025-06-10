@@ -23,7 +23,7 @@ function AdminPage() {
   }, []);
 
   const fetchProducts = () => {
-    axios.get('/api/products')
+    axios.get('http://localhost:5000/api/products')
       .then(res => setProds(res.data))
       .catch(err => console.error('Ошибка загрузки товаров:', err));
   };
@@ -33,7 +33,7 @@ function AdminPage() {
     if (!name || !price || !category) return alert('Заполните все поля');
 
     try {
-      const { data } = await axios.post('/api/products', {
+      const { data } = await axios.post('http://localhost:5000/api/products', {
         name,
         price: parseFloat(price),
         category,
@@ -66,7 +66,7 @@ function AdminPage() {
 
   const saveDescription = async () => {
     try {
-      await axios.patch(`/api/products/${editId}`, { description: editDescription });
+      await axios.patch(`http://localhost:5000/api/products/${editId}`, { description: editDescription });
       alert('Описание обновлено');
       setEditId(null);
       setEditDescription('');

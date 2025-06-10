@@ -6,7 +6,7 @@ export default function OrdersPage({ user }) {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`/api/orders?email=${encodeURIComponent(user.email)}`)
+    fetch(`http://localhost:5000/api/orders?email=${encodeURIComponent(user.email)}`)
       .then(res => res.json())
       .then(data => setOrders(data))
       .catch(console.error);

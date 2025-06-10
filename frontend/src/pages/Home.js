@@ -15,7 +15,7 @@ const Home = ({ products, onAdd }) => {
     const comment = comments[productId];
     if (!comment || comment.trim() === '') return;
     try {
-      const res = await fetch(`/api/products/${productId}/reviews`, {
+      const res = await fetch(`http://localhost:5000/api/products/${productId}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ comment }),
