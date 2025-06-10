@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const BASE_URL = 'https://computer-store-wsd2.onrender.com'; // <-- поменяй на нужный URL
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export default function UserAuth({ setUser }) {
   const [email, setEmail] = useState('');
